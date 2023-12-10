@@ -15,12 +15,6 @@ let explode_string s = List.init (String.length s) (String.get s)
 
 let create_string c1 c2 = 
     let buf = Buffer.create 16 in
-    match c1 with
-    | None -> Buffer.add_string buf String.empty; Buffer.contents buf
-    | Some c1 -> 
-        match c2 with
-        | None -> Buffer.add_char buf c1; Buffer.add_char buf c1; Buffer.contents buf
-        | Some c2 -> 
-            Buffer.add_char buf c1;
-            Buffer.add_char buf c2;
-            Buffer.contents buf
+    Buffer.add_char buf c1;
+    Buffer.add_char buf c2;
+    Buffer.contents buf

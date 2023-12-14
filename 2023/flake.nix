@@ -45,7 +45,7 @@
             packages.default = main;
 
             devShells.default = pkgs.mkShell {
-                inputsFrom = [ main ];
+                # inputsFrom = [ main ];
                 buildInputs = devPackages ++ (with pkgs; [
                     # You can add packages from nixpkgs here
                     ocamlPackages.iter

@@ -13,8 +13,4 @@ let read_file file_name : string list =
 
 let explode_string s = List.init (String.length s) (String.get s)
 
-let create_string c1 c2 = 
-    let buf = Buffer.create 16 in
-    Buffer.add_char buf c1;
-    Buffer.add_char buf c2;
-    Buffer.contents buf
+exception SimpleException of string

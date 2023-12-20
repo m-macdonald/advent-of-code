@@ -26,10 +26,7 @@ let part1 file_name =
                     let draw_value draw =
                         let index_of_first_space = String.index_from draw 0 ' ' in
                         let value_substr = String.sub draw 0 (index_of_first_space) in
-                        (* Printf.printf "complete draw string: %s\n" draw; *)
-                        (* Printf.printf "value substring: %s\n" value_substr; *)
                         int_of_string value_substr in
-                    (* let (red_count, blue_count, green_count) = acc in     *)
                     match split_draws with
                     | [] ->  is_game_valid
                     | hd :: tl ->
@@ -47,12 +44,6 @@ let part1 file_name =
                 match game_draws with
                 | [] -> is_game_valid
                 | hd :: tl ->
-                    (* let game_counts = parse_counts hd in *)
-                    (* let (red_count, blue_count, green_count) = game_counts in *)
-                    (* let (red_total, blue_total, green_total) = acc in *)
-                    (* let new_total = (red_total + red_count, blue_total + blue_count, green_total + green_count) in *)
-                    (* let (new_red, new_blue, new_green) = new_total in *)
-                    (* Printf.printf "red: %i, blue: %i, green: %i\n" new_red new_blue new_green; *)
                     match parse_counts hd with
                     | false -> loop_game_draws [] false
                     | true -> loop_game_draws tl true in
@@ -61,27 +52,16 @@ let part1 file_name =
             | true -> Some game_number
             | _ -> None in
 
-            (* let (red_total, blue_total, green_total) = loop_game_draws game_draws (0, 0, 0) in *)
-            (* Printf.printf "Red: %i, Green: %i, Blue: %i\n%s" red_total green_total blue_total game_string; *)
-            (* { number = game_number; red_count = red_total; green_count = green_total; blue_count = blue_total } in *)
-            (* Printf.printf "%s\n" game_string in *)
-            
-
         match games with
         | [] -> game_total
         | hd :: tl ->
             match parse_game hd with
             | Some game_number -> parse_games tl (game_total + game_number)
             | None -> parse_games tl game_total in
-            (* let game = parse_game hd in *)
-            (* if game.red_count > 12 || game.green_count > 13 || game.blue_count > 14 then *)
-            (*     parse_games tl game_total *)
-            (* else *)
-            (*     parse_games tl (game_total + game.number) in *)
-    
+
     parse_games file_contents 0
 
 let () = 
-    Printf.printf "part 1: %d\n" (part1 "inputs/day2-part1.txt");
+    Printf.printf "part 1: %d\n" (part1 "inputs/day2.txt");
     (* part one and two share the same input *)
-    (* printf.printf "part 2: %d\n" (part2 "inputs/part1.txt"); *)
+    (* printf.printf "part 2: %d\n" (part2 "inputs/day2.txt"); *)

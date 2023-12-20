@@ -87,6 +87,6 @@ let part2 file_name =
     sum_nums 0 input
   
 let () = 
-    Printf.printf "Part 1: %d\n" (part1 "inputs/part1.txt");
-    (* Part one and two share the same input *)
-    Printf.printf "Part 2: %d\n" (part2 "inputs/part1.txt");
+    printf.printf "part 1: %d\n" (part1 "inputs/day1.txt");
+    (* part one and two share the same input *)
+    printf.printf "part 2: %d\n" (part2 "inputs/day1.txt");

@@ -13,6 +13,19 @@ let read_file file_name : string list =
 
 let explode_string s = List.init (String.length s) (String.get s)
 
+let reverse_string s = 
+    let list = List.rev (explode_string s) in
+    let buf = Buffer.create (String.length s) in
+    let rec loop list = 
+        match list with
+        | [] -> Buffer.contents buf
+        | hd :: tl -> 
+            Buffer.add_char buf hd;
+            loop tl in
+    loop list
+
+
+
 let create_string c1 c2 = 
     let buf = Buffer.create 16 in
     Buffer.add_char buf c1;

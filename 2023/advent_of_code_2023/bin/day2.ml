@@ -1,10 +1,13 @@
 open Advent_of_code_2023
 
-type game = { number: int; red_count: int; green_count: int; blue_count: int }
+type game = { number: int; is_game_valid: bool; red_min: int; green_min: int; blue_min: int }
+let red = "red"
+let blue = "blue"
+let green = "green"
 
-let part1 file_name = 
+let day2 file_name = 
     let file_contents = Utilities.read_file file_name in
-    let rec parse_games games game_total =
+    let rec parse_games games game_total game_power =
         let parse_game game_string =
             (* This is the known index of the end of the "Game " substring that preceeds each line*)
             let index_of_game_substr = 5 in
@@ -15,9 +18,9 @@ let part1 file_name =
             let game_string_length = String.length game_string in
             let draws_substr = String.sub game_string (index_of_semicolon_with_padding) (game_string_length - index_of_semicolon_with_padding) in
             let game_draws = String.split_on_char ';' draws_substr in
-            let parse_counts game_draw =
+            let parse_counts game_draw game =
                 let split_draws = String.split_on_char ',' game_draw in
-                let rec loop split_draws is_game_valid =
+                let rec loop split_draws game =
                     let determine_color draw = 
                         let reversed_draw_string = Utilities.reverse_string draw in
                         let index_of_first_space = String.index_from reversed_draw_string 0 ' ' in
@@ -28,40 +31,53 @@ let part1 file_name =
                         let value_substr = String.sub draw 0 (index_of_first_space) in
                         int_of_string value_substr in
                     match split_draws with
-                    | [] ->  is_game_valid
+                    | [] -> game
                     | hd :: tl ->
                         let draw = String.trim hd in
                         let value = draw_value draw in
                         let color = determine_color draw in
-                        match color with
-                        | "red" when value > 12 -> loop [] false 
-                        | "blue" when value > 14 -> loop [] false
-                        | "green" when value > 13-> loop [] false
-                        | _ -> loop tl true in
+                        let is_game_valid =
+                            if game.is_game_valid then
+                                if  (color = red && value > 12) ||
+                                    (color = blue && value > 14) || 
+                                    (color = green && value > 13) then
+                                    false
+                                else
+                                    true
+                            else
+                                false in   
+                        let red_min = if value > game.red_min && color = red then value else game.red_min in
+                        let blue_min = if value > game.blue_min && color = blue then value else game.blue_min in
+                        let green_min = if value > game.green_min && color = green then value else game.green_min in
+                        
+                        loop tl { number = game_number; is_game_valid; red_min; blue_min; green_min } in
 
-                loop split_draws true in
-            let rec loop_game_draws game_draws is_game_valid =
+            loop split_draws game in
+            let rec loop_game_draws game_draws game =
                 match game_draws with
-                | [] -> is_game_valid
+                | [] -> game
                 | hd :: tl ->
-                    match parse_counts hd with
-                    | false -> loop_game_draws [] false
-                    | true -> loop_game_draws tl true in
+                    let game = parse_counts hd game in
+                    loop_game_draws tl game in
 
-            match loop_game_draws game_draws true with
-            | true -> Some game_number
-            | _ -> None in
+            loop_game_draws game_draws { number = 0; is_game_valid = true; red_min = 0; green_min = 0; blue_min = 0 } in
 
         match games with
-        | [] -> game_total
+        | [] -> (game_total, game_power)
         | hd :: tl ->
-            match parse_game hd with
-            | Some game_number -> parse_games tl (game_total + game_number)
-            | None -> parse_games tl game_total in
+            let game = parse_game hd in
+            let game_total = 
+                match game.is_game_valid with
+                | true -> game_total + game.number
+                | false -> game_total in
+            let power = game.red_min * game.blue_min * game.green_min in
+            let game_power = game_power + power in
+            parse_games tl game_total game_power in
 
-    parse_games file_contents 0
+    parse_games file_contents 0 0
 
 let () = 
-    Printf.printf "part 1: %d\n" (part1 "inputs/day2.txt");
+    let (game_total, power_total) = day2 "inputs/day2.txt" in
+    Printf.printf "part 1: %d\n" game_total;
     (* part one and two share the same input *)
-    (* printf.printf "part 2: %d\n" (part2 "inputs/day2.txt"); *)
+    Printf.printf "part 2: %d\n" power_total
